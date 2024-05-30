@@ -1,6 +1,13 @@
 import { Button, Flex, TextInput } from "@mantine/core";
-import { KernelVersionType, useCreateKernelClientPasskey } from "@zerodev/waas";
+import {
+  KernelVersionType,
+  useCreateKernelClientPasskey
+} from "@zerodev/waas";
 import { useEffect, useState } from "react";
+
+// const publicClient = createPublicClient({
+//   transport: http(ZERODEV_BUNDLER_URL),
+// });
 
 export default function PasskeySigner({
   version,
@@ -10,9 +17,16 @@ export default function PasskeySigner({
   const [username, setUsername] = useState("");
   const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
-  const { connectRegister, connectLogin, error } = useCreateKernelClientPasskey(
-    { version: version }
-  );
+  const { connectRegister, connectLogin, data, error } =
+    useCreateKernelClientPasskey({ version: version });
+
+  // const createPasskey = async (name: string) => {
+  // const passkeyValidator = await createPasskeyValidator(publicClient, {
+  //   passkeyName: name,
+  //   passkeyServerUrl: "your passkey server URL",
+  //   entryPoint: ENTRYPOINT_ADDRESS_V07,
+  // })
+  // }
 
   useEffect(() => {
     if (error) {

@@ -7,7 +7,7 @@ import {
   createKernelAccountClient,
   createZeroDevPaymasterClient,
 } from "@zerodev/sdk";
-import { useSetKernelClient, useChainId } from "@zerodev/waas";
+import { useChainId, useSetKernelClient } from "@zerodev/waas";
 import { ENTRYPOINT_ADDRESS_V07 } from "permissionless";
 import { EntryPoint } from "permissionless/types";
 import { useState } from "react";
@@ -86,7 +86,7 @@ export function CreateCustomizedKernelButton() {
       variant="outline"
       onClick={createKernelClient}
     >
-      Generate Private key
+      Create smart account 
     </Button>
   );
 }
