@@ -43,7 +43,7 @@ function SessionInfo({ sessionId }: { sessionId: `0x${string}` }) {
     sessionId,
     paymaster: paymasterConfig,
   });
-  const { data, write, isDisabled, isPending, error } = res;
+  const { data, write, isPending, error } = res;
 
   useEffect(() => {
     if (error) {
@@ -80,7 +80,6 @@ function SessionInfo({ sessionId }: { sessionId: `0x${string}` }) {
         {sessionId && <p>{`Permission ID: ${sessionId}`}</p>}
         <Button
           variant="outline"
-          disabled={isDisabled}
           loading={isPending}
           onClick={() => {
             write([
