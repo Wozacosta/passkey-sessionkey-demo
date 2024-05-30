@@ -11,10 +11,9 @@ import {
 import { ENTRYPOINT_ADDRESS_V07, bundlerActions } from "permissionless";
 import { useEffect, useState } from "react";
 import { parseAbi, parseGwei } from "viem";
-import { Receipt } from "./Receipt";
-import { UserOpHash } from "./UserOpHash";
+import { AllData } from "./AllData";
 
-interface Data {
+export interface Data {
   userOpHash: `0x${string}`;
   receipt: any;
 }
@@ -44,7 +43,6 @@ function SessionInfo({ sessionId }: { sessionId: `0x${string}` }) {
     sessionId,
     paymaster: paymasterConfig,
   });
-  console.log({ res, allData });
   const { data, write, isDisabled, isPending, error } = res;
 
   useEffect(() => {
@@ -100,12 +98,7 @@ function SessionInfo({ sessionId }: { sessionId: `0x${string}` }) {
         </Button>
       </div>
       {data && <div className="mt-8 mb-8">MintWithSession Latest UserOp Hash: {getEllipsedAddress(data)}</div>}
-      {allData.map((d, index) => (
-        <div key={index} style={{border: "1px solid red"}}>
-          <UserOpHash userOpHash={d.userOpHash} />{"       "}
-          <Receipt receipt={d.receipt} />
-        </div>
-      ))}
+      <AllData allData={allData} />
     </>
   );
 }

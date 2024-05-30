@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <Flex direction="column" w="100vw" h="100vh">
       <Navbar />
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex mt-8 flex-col justify-center items-center">
         <>
           {!isConnected ? (
             <div className="flex flex-row justify-between space-x-4">
@@ -27,6 +27,7 @@ export default function Home() {
           ) : (
             <>
               <SmartAccountBlock />
+              <div className="mt-10"></div>
               <SessionBlock />
             </>
           )}

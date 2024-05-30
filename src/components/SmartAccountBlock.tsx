@@ -7,17 +7,20 @@ import {
   useKernelClient,
   useSendUserOperation,
 } from "@zerodev/waas";
+import { ENTRYPOINT_ADDRESS_V07, bundlerActions } from "permissionless";
 import { useEffect, useState } from "react";
 import { Popover } from "react-tiny-popover";
 import { parseAbi } from "viem";
+import { AllData } from "./AllData";
+import { Data } from "./SessionBlock";
 
 export default function SmartAccountBlock() {
-  const { address } = useKernelClient();
+  const { address, kernelClient } = useKernelClient();
   const { paymasterConfig } = usePaymasterConfig();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const {
-    data: hash,
+    data,
     write,
     error,
     isPending,
@@ -26,13 +29,20 @@ export default function SmartAccountBlock() {
     paymaster: paymasterConfig,
   });
   console.log({ context });
-  const { data } = useBalance();
+  const { data: balance } = useBalance();
   const tokenAddress = "0x3870419Ba2BBf0127060bCB37f69A1b1C090992B";
   const abi = parseAbi(["function mint(address _to, uint256 amount) public"]);
+
+  const bundlerClient = kernelClient?.extend(
+    bundlerActions(ENTRYPOINT_ADDRESS_V07)
+  );
+
+  const [allData, setAllData] = useState<Data[]>([]);
 
   const sepoliaEtherscanUrl = `https://sepolia.etherscan.io/address/${address}`;
   const sepoliaBlockScoutUrl = `https://eth-sepolia.blockscout.com/address/${address}`;
   const sepoliaJiffyscanScoutUrl = `https://jiffyscan.xyz/account/${address}?network=sepolia&pageNo=0&pageSize=10`;
+
 
   useEffect(() => {
     if (error) {
@@ -42,6 +52,27 @@ export default function SmartAccountBlock() {
       });
     }
   }, [error]);
+
+  const dataInAllData = (userOpHash: `0x${string}`) => {
+    return allData.some((d) => d.userOpHash === userOpHash);
+  };
+
+  useEffect(() => {
+    console.log({data})
+    const fetchReceipt = async () => {
+      if (data === undefined) return;
+      if (dataInAllData(data)) return;
+      const allDataBefore = [...allData];
+      setAllData([...allData, { userOpHash: data, receipt: undefined }]);
+      const receipt = await bundlerClient?.waitForUserOperationReceipt({
+        hash: data as `0x${string}`,
+      });
+      setAllData([...allDataBefore, { userOpHash: data, receipt }]);
+      console.log({ receipt });
+    };
+
+    fetchReceipt().catch(console.error);
+  }, [data]);
 
   return (
     <>
@@ -91,9 +122,9 @@ export default function SmartAccountBlock() {
         </div>
       </Popover>
 
-      {data && (
+      {balance && (
         <div className="mb-4">
-          Balance: {`${data.formatted} ${data.symbol}`}
+          Balance: {`${balance.formatted} ${balance.symbol}`}
         </div>
       )}
       <div className="flex flex-row justify-center items-center space-x-4 mt-4">
@@ -123,7 +154,8 @@ export default function SmartAccountBlock() {
           Mint
         </Button>
       </div>
-      {hash && <div className="mt-4">UserOp Hash: {hash}</div>}
+      {data && <div className="mt-4">UserOp Hash: {data}</div>}
+      <AllData allData={allData} />
     </>
   );
 }
