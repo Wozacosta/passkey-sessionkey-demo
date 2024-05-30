@@ -26,11 +26,11 @@ export function PaymasterSwitch({ setting }: { setting: PaymasterSetting }) {
           alignItems: "center",
         }}
       >
-        <Text style={{ marginBottom: sessionId ? "10px" : "0" }}>
+        <Text style={{ color: "red", marginBottom: sessionId ? "10px" : "0" }}>
           {sessionId ? `Permission ID: ${sessionId}` : "Mint"}
         </Text>
         <div
-          style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          style={{color: "blue", width: "100%", display: "flex", justifyContent: "center" }}
         >
           <SegmentedControl
             value={value}

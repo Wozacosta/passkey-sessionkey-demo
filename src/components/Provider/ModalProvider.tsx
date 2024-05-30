@@ -70,6 +70,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
     }
   }, [kernelAccount, closeConnectModal]);
 
+  // NOTE: set policies here
   const openSessionModalWithPolicy = useCallback(
     ({ policies }: { policies: Policy[] | undefined }) => {
       setPolicies(policies || []);

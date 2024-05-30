@@ -23,6 +23,8 @@ function CreateSessionModal({ onClose, open, policies }: SessionModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { kernelAccount } = useKernelClient();
   const { write, data, error } = useCreateSession();
+  // NOTE: doc here https://docs.zerodev.app/react/use-create-session
+  // NOTE: write
 
   useEffect(() => {
     if (data) onClose();
@@ -35,10 +37,11 @@ function CreateSessionModal({ onClose, open, policies }: SessionModalProps) {
       onClose={() => {
         onClose();
       }}
+      style={{ color: "red" }}
       title={titleId}
     >
       <div className="flex flex-col justify-center items-center">
-        <h1>Permission Approval</h1>
+        <h1 style={{ color: "red" }}>Permission Approval</h1>
         <Button
           variant="outline"
           disabled={isLoading || !write || !kernelAccount}
@@ -57,6 +60,12 @@ function CreateSessionModal({ onClose, open, policies }: SessionModalProps) {
   );
 }
 
+export const contractAddress = "0x3870419Ba2BBf0127060bCB37f69A1b1C090992B";
+
+export const contractABI = parseAbi([
+  "function mint(address _to, uint256 amount) public",
+]);
+
 function CreateBasicSessionModal({
   onClose,
   open,
@@ -65,11 +74,6 @@ function CreateBasicSessionModal({
   const [isLoading, setIsLoading] = useState(false);
   const { address } = useKernelClient();
   const { write, data, error } = useCreateBasicSession();
-
-  const contractAddress = "0x3870419Ba2BBf0127060bCB37f69A1b1C090992B";
-  const contractABI = parseAbi([
-    "function mint(address _to, uint256 amount) public",
-  ]);
 
   useEffect(() => {
     if (data) onClose();
@@ -137,6 +141,7 @@ export default function SessionModal({
 }: SessionModalProps) {
   const { entryPoint } = useKernelClient();
 
+  // NOTE: This is a temporary solution to handle the different entrypoints
   if (entryPoint === ENTRYPOINT_ADDRESS_V06) {
     return <CreateBasicSessionModal onClose={onClose} open={open} />;
   } else {
